@@ -1,6 +1,6 @@
 {
-  "name": "commitizen",
-  "version": "0.0.0-semantically-released",
+  "name": "seb-commitizen",
+  "version": "2.10.2",
   "description": "Git commit, but play nice with conventions.",
   "main": "dist/index.js",
   "scripts": {
@@ -16,8 +16,7 @@
     "lint": "eslint --ignore-path .gitignore .",
     "test": "nyc --require babel-core/register _mocha -- test/tests/index.js",
     "test:watch": "nodemon -q --ignore test/.tmp/ --ignore test/artifacts/ --ignore coverage/ --exec \"npm run test\" --",
-    "test:windows": "node ./test/tools/trigger-appveyor-tests.js",
-    "postinstall": "opencollective postinstall"
+    "test:windows": "node ./test/tools/trigger-appveyor-tests.js"
   },
   "config": {
     "commitizen": {
@@ -45,6 +44,9 @@
   "bin": {
     "git-cz": "./bin/git-cz",
     "commitizen": "./bin/commitizen"
+  },
+  "publishConfig": {
+    "registry": "https://repo.sebank.se/artifactory/api/npm/seb-npm/"
   },
   "author": "Jim Cummins <jimthedev@gmail.com> (https://github.com/jimthedev)",
   "license": "MIT",
@@ -85,7 +87,7 @@
     "inquirer": "1.2.3",
     "lodash": "4.17.10",
     "minimist": "1.2.0",
-    "opencollective": "1.0.3",
+    "opencollective-postinstall": "2.0.0",
     "path-exists": "2.1.0",
     "shelljs": "0.7.6",
     "strip-json-comments": "2.0.1"

@@ -12,14 +12,20 @@ for (var e = 0; e < requiredEnvironmentVariables.length; e++)
   ensureEnvironmentVariableIsSet(requiredEnvironmentVariables[e]);
 }
 
+if (!process.env.AV_TOKEN) {
+  console.error('AV_TOKEN environment variable is missing.');
+  die();
+}
 axios({
   method: 'post',
-  url: 'https://ci.appveyor.com/api/builds',
+  url: 'https://ci.appveyor.com/api/builds/build',
   headers: {
     'Content-type': 'application/json',
     'Authorization': 'Bearer ' + process.env.AV_TOKEN
   },
-  data: {
+  data: {  accountName: process.env.AV_ACCOUNTNAME, 
+  projectSlug: process.env.AV_PROJECTSLUG, 
+  branch: process.env.AV_BRANCH || process.env.TRAVIS_BRANCH,
     accountName: process.env.AV_ACCOUNTNAME,
     projectSlug: process.env.AV_PROJECTSLUG,
     branch: process.env.AV_BRANCH ? process.env.AV_BRANCH : process.env.TRAVIS_BRANCH
@@ -29,8 +35,8 @@ axios({
   if (response.data && response.data.buildId && response.data.buildId > 1)
   {
     console.log('Linux build complete. Windows build starting at: https://ci.appveyor.com/project/' + process.env.AV_ACCOUNTNAME + '/' + process.env.AV_PROJECTSLUG + '/build/' + response.data.version);
-  } else {
-    console.error(response);
+  } else if (response.data && response.data.buildId && response.data.buildId > 1){
+    console.error('Error message:', response.data.message);
     die();
   }
 })
@@ -40,7 +46,7 @@ axios({
 });
 
 function die () {
-  console.error('\nERROR: I could not start the Windows test suite on AppVeyor.\n\nPlease ensure that you\'ve set the following environment variables: AV_ACCOUNTNAME, AV_BRANCH, AV_PROJECTSLUG and the following secure (encrypted) TravisCI environment variables: AV_BEARER. \n\nHint: Are you sure you\'ve regenerated the encrypted / secure environment variabes in the .travis.yml? The ones included by default in that file are the repo maintainers and will not work on your fork of this project.\n');
+  console.error('\nERROR: I could not start the Windows test suite on AppVeyor.\n\nPlease ensure that you\'ve set the following environment variables: AV_ACCOUNTNAME, AV_BRANCH, AV_PROJECTSLUG, and the secure (encrypted) TravisCI environment variables: AV_BEARER. \n\nHint: Are you sure you\'ve regenerated the encrypted / secure environment variabes in the .travis.yml? The ones included by default in that file are the repo maintainers and will not work on your fork of this project.\n');
   process.exit(1);
 }
 

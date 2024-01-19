@@ -16,3 +16,7 @@ function log (repoPath, done) {
     done(stdout);
   });
 }
+  } catch (error) {
+    done(error);
+  }
+}
